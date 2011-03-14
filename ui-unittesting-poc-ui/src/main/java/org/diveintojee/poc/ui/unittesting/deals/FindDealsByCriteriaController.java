@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -47,17 +49,16 @@ public class FindDealsByCriteriaController implements ActionListener {
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		if (getView().getOkButton().equals(e.getSource())) {
+		if (getView().getOkButton().equals(e.getSource()))
 			onOkButtonClick();
-		} else if (getView().getClearButton().equals(e.getSource())) {
+		else if (getView().getClearButton().equals(e.getSource()))
 			onClearButtonClick();
-		} else if (getView().getEntityComboBox().equals(e.getSource())) {
+		else if (getView().getEntityComboBox().equals(e.getSource()))
 			try {
 				onEntitySelectionChange();
 			} catch (Throwable th) {
 				th.printStackTrace();
 			}
-		}
 	}
 
 	protected void addListeners() {
@@ -109,20 +110,18 @@ public class FindDealsByCriteriaController implements ActionListener {
 
 		List<Entity> entities = referentialService.loadAllEntities();
 
-		if (getModel() == null) {
+		if (getModel() == null)
 			model = new FindDealsByCriteriaModel();
-		}
 
 		getModel().setEntities(entities);
 
-		if (CollectionUtils.isEmpty(getModel().getEntities())) {
+		if (CollectionUtils.isEmpty(getModel().getEntities()))
 			getView().getEntityComboBox().removeAllItems();
-		} else {
+		else {
 			getView().getEntityComboBox().addItem(Entity.EMPTY);
 			for (Entity entity : getModel().getEntities())
-				if (entity != null) {
+				if (entity != null)
 					getView().getEntityComboBox().addItem(entity);
-				}
 		}
 
 		List<ProductType> productTypes = referentialService
@@ -130,13 +129,12 @@ public class FindDealsByCriteriaController implements ActionListener {
 
 		getModel().setProductTypes(productTypes);
 
-		if (CollectionUtils.isEmpty(getModel().getProductTypes())) {
+		if (CollectionUtils.isEmpty(getModel().getProductTypes()))
 			getView().getProductTypeComboBox().removeAllItems();
-		} else {
+		else {
 			getView().getProductTypeComboBox().addItem(ProductType.EMPTY);
-			for (ProductType productType : getModel().getProductTypes()) {
+			for (ProductType productType : getModel().getProductTypes())
 				getView().getProductTypeComboBox().addItem(productType);
-			}
 		}
 
 	}
@@ -149,9 +147,8 @@ public class FindDealsByCriteriaController implements ActionListener {
 		Entity entity = (Entity) getView().getEntityComboBox()
 				.getSelectedItem();
 
-		if (getModel() == null) {
+		if (getModel() == null)
 			model = new FindDealsByCriteriaModel();
-		}
 
 		getModel().getCriteria().setEntity(entity);
 
@@ -200,12 +197,10 @@ public class FindDealsByCriteriaController implements ActionListener {
 
 		removeListeners();
 
-		if (getModel() == null) {
+		if (getModel() == null)
 			model = new FindDealsByCriteriaModel();
-		}
-		if (getModel().getCriteria() == null) {
+		if (getModel().getCriteria() == null)
 			getModel().setCriteria(new DealsSearchCriteria());
-		}
 
 		getModel().getCriteria().setStartDate(
 				getView().getStartDatePicker().getDate());
@@ -221,9 +216,8 @@ public class FindDealsByCriteriaController implements ActionListener {
 
 		if (!ArrayUtils.isEmpty(currencies)) {
 			List<String> currencyCodes = new ArrayList<String>();
-			for (Object object : currencies) {
+			for (Object object : currencies)
 				currencyCodes.add((String) object);
-			}
 			getModel().getCriteria().setCurrencyCodes(currencyCodes);
 		}
 
@@ -243,8 +237,7 @@ public class FindDealsByCriteriaController implements ActionListener {
 			getView().getStartDatePicker().setDate(null);
 			getView().getEndDatePicker().setDate(null);
 			getView().getEntityComboBox().setSelectedIndex(-1);
-			getView().getCurrencyList().setListData(
-					ArrayUtils.EMPTY_OBJECT_ARRAY);
+			getView().getCurrencyList().setModel(new DefaultListModel());
 			getView().getProductTypeComboBox().setSelectedIndex(-1);
 			getView().getCurrencyList().setSelectionInterval(-1, -1);
 			((FindDealByCriteriaResultsTableModel) getView().getResultsTable()
@@ -254,35 +247,34 @@ public class FindDealsByCriteriaController implements ActionListener {
 		} else {
 			getView().getStartDatePicker().setDate(
 					getModel().getCriteria().getStartDate());
+			getView().getStartDatePicker().revalidate();
+
 			getView().getEndDatePicker().setDate(
 					getModel().getCriteria().getEndDate());
+			getView().getEndDatePicker().revalidate();
+
 			getView().getEntityComboBox().setSelectedItem(
 					getModel().getCriteria().getEntity());
 
 			Entity entity = getModel().getCriteria().getEntity();
-			if (entity == null
-					|| CollectionUtils.isEmpty(entity.getCurrencyCodes())) {
-				// System.out
-				// .println("entity is null or its currencies are empty");
-				getView().getCurrencyList().setListData(
-						ArrayUtils.EMPTY_OBJECT_ARRAY);
-			} else {
-				List<String> currencyCodes = entity.getCurrencyCodes();
-				currencyCodes.add(0, StringUtils.EMPTY);
-				getView().getCurrencyList()
-						.setListData(currencyCodes.toArray());
+			getView().getCurrencyList().setModel(new DefaultListModel());
+			if (entity != null
+					&& !CollectionUtils.isEmpty(entity.getCurrencyCodes())) {
+				List<String> copy = new ArrayList<String>();
+				for (String string : entity.getCurrencyCodes())
+					copy.add(string);
+				copy.add(0, StringUtils.EMPTY);
+				getView().getCurrencyList().setListData(copy.toArray());
 			}
 
 			if (entity != null
 					&& !CollectionUtils.isEmpty(entity.getCurrencyCodes())
 					&& !CollectionUtils.isEmpty(getModel().getCriteria()
-							.getCurrencyCodes())) {
+							.getCurrencyCodes()))
 				for (String currency : getModel().getCriteria()
-						.getCurrencyCodes()) {
+						.getCurrencyCodes())
 					getView().getCurrencyList().setSelectedValue(currency,
 							false);
-				}
-			}
 
 			getView().getProductTypeComboBox().setSelectedItem(
 					getModel().getCriteria().getProductType());
@@ -294,6 +286,9 @@ public class FindDealsByCriteriaController implements ActionListener {
 		}
 
 		getView().getSplitPane().repaint();
+		getView().getResultsScrollPane().repaint();
+		getView().getResultsTable().repaint();
+		getView().getResultsTable().updateUI();
 		getView().getResultsTable().revalidate();
 
 		addListeners();
