@@ -28,8 +28,7 @@ public class FindDealByCriteriaResultsTableModel extends AbstractTableModel {
 
 	private List<Deal> rows;
 
-	private String[] columns = { "Date", "Entity", "Product type", "Amount",
-			"Currency" };;
+	private String[] columns = null;
 
 	/**
 	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)

@@ -54,11 +54,7 @@ public class FindDealsByCriteriaController implements ActionListener {
 		else if (getView().getClearButton().equals(e.getSource()))
 			onClearButtonClick();
 		else if (getView().getEntityComboBox().equals(e.getSource()))
-			try {
-				onEntitySelectionChange();
-			} catch (Throwable th) {
-				th.printStackTrace();
-			}
+			onEntitySelectionChange();
 	}
 
 	protected void addListeners() {
@@ -69,12 +65,12 @@ public class FindDealsByCriteriaController implements ActionListener {
 
 	protected void createView() {
 		setView(new FindDealsByCriteriaInternalFrame());
-		getView().getResultsTable().setModel(
-				new FindDealByCriteriaResultsTableModel());
+		FindDealByCriteriaResultsTableModel tableModel = new FindDealByCriteriaResultsTableModel();
 		String[] columns = { "Date", "Entity", "Product type", "Amount",
 				"Currency" };
-		((FindDealByCriteriaResultsTableModel) getView().getResultsTable()
-				.getModel()).setColumns(columns);
+		// Set colums before setting model to table
+		tableModel.setColumns(columns);
+		getView().getResultsTable().setModel(tableModel);
 	}
 
 	/**
@@ -215,9 +211,12 @@ public class FindDealsByCriteriaController implements ActionListener {
 		Object[] currencies = getView().getCurrencyList().getSelectedValues();
 
 		if (!ArrayUtils.isEmpty(currencies)) {
+
 			List<String> currencyCodes = new ArrayList<String>();
+
 			for (Object object : currencies)
 				currencyCodes.add((String) object);
+
 			getModel().getCriteria().setCurrencyCodes(currencyCodes);
 		}
 
@@ -286,9 +285,6 @@ public class FindDealsByCriteriaController implements ActionListener {
 		}
 
 		getView().getSplitPane().repaint();
-		getView().getResultsScrollPane().repaint();
-		getView().getResultsTable().repaint();
-		getView().getResultsTable().updateUI();
 		getView().getResultsTable().revalidate();
 
 		addListeners();
