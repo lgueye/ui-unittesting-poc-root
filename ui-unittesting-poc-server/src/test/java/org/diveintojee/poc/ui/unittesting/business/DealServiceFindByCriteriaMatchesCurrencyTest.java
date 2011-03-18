@@ -14,11 +14,9 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.diveintojee.poc.ui.unittesting.domain.Deal;
 import org.diveintojee.poc.ui.unittesting.domain.services.DealsSearchCriteria;
-import org.diveintojee.poc.ui.unittesting.persistence.PersistenceManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 /**
  * @author louis.gueye@gmail.com
@@ -28,9 +26,6 @@ public class DealServiceFindByCriteriaMatchesCurrencyTest {
 
 	@InjectMocks
 	private DealServiceImpl underTest;
-
-	@Mock
-	PersistenceManager persistenceManager;
 
 	/**
 	 * Test method for
